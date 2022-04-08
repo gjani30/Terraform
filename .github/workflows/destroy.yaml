@@ -1,0 +1,45 @@
+name: Deploy Infrastructure
+
+on: [workflow_dispatch]
+
+jobs:
+  deploy_prod:
+    name: Deploy Infrastructure
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: hashicorp/setup-terraform@v1
+      
+      - name: Set AWS credential for master/prod deployment
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: us-east-1
+
+      - name: Set DEPLOYMENT_ENV for master branch
+        if: ${{ github.ref == 'refs/heads/master' }}
+        run: |
+          echo "DEPLOYMENT_ENV=prod" >> $GITHUB_ENV
+
+      - name: Set DEPLOYMENT_ENV for dev branch
+        if: ${{ github.ref == 'refs/heads/dev' }}
+        run: |
+          echo "DEPLOYMENT_ENV=dev" >> $GITHUB_ENV
+
+      - name: Terraform Init
+        id: init
+        run: |
+          terraform init -no-color
+
+      - name: Terraform Validate
+        id: validate
+        run: |
+          terraform validate -no-color
+
+      - name: Terraform Apply API
+        id: apply_api
+        run: |
+          terraform destroy -var-file=common.${{ env.DEPLOYMENT_ENV }}.tfvars -no-color -auto-approve
