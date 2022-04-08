@@ -3,8 +3,8 @@ name: Destroy Infrastructure
 on: [workflow_dispatch]
 
 jobs:
-  deploy_prod:
-    name: Deploy Infrastructure
+  destroy_env:
+    name: Destroy Infrastructure
     runs-on: ubuntu-latest
 
     steps:
@@ -33,6 +33,10 @@ jobs:
         if: ${{ github.ref == 'refs/heads/staging' }}
         run: |
           echo "DEPLOYMENT_ENV=staging" >> $GITHUB_ENV
+          
+      - name: Set state file
+        run: |
+          cp state.${{ env.DEPLOYMENT_ENV }}.tf.example state.tf 
 
       - name: Terraform Init
         id: init
