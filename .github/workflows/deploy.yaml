@@ -28,6 +28,11 @@ jobs:
         if: ${{ github.ref == 'refs/heads/dev' }}
         run: |
           echo "DEPLOYMENT_ENV=dev" >> $GITHUB_ENV
+          
+      - name: Set DEPLOYMENT_ENV for staging branch
+        if: ${{ github.ref == 'refs/heads/staging' }}
+        run: |
+          echo "DEPLOYMENT_ENV=staging" >> $GITHUB_ENV
 
       - name: Terraform Init
         id: init
