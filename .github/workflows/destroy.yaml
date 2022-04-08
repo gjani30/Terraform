@@ -28,6 +28,11 @@ jobs:
         if: ${{ github.ref == 'refs/heads/dev' }}
         run: |
           echo "DEPLOYMENT_ENV=dev" >> $GITHUB_ENV
+    
+      - name: Set DEPLOYMENT_ENV for staging branch
+        if: ${{ github.ref == 'refs/heads/staging' }}
+        run: |
+          echo "DEPLOYMENT_ENV=staging" >> $GITHUB_ENV
 
       - name: Terraform Init
         id: init
@@ -39,7 +44,7 @@ jobs:
         run: |
           terraform validate -no-color
 
-      - name: Terraform Apply API
+      - name: Terraform Destroy
         id: apply_api
         run: |
           terraform destroy -var-file=common.${{ env.DEPLOYMENT_ENV }}.tfvars -no-color -auto-approve

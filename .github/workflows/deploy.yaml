@@ -39,7 +39,7 @@ jobs:
         run: |
           terraform validate -no-color
 
-      - name: Terraform Apply API
+      - name: Terraform Apply
         id: apply_api
         run: |
           terraform apply -var-file=common.${{ env.DEPLOYMENT_ENV }}.tfvars -no-color -auto-approve
