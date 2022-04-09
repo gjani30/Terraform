@@ -14,3 +14,10 @@ or visit https://docs.aws.amazon.com/console/cloud9/ for our documentation.
 Happy coding!
 
 
+## Prerequisite
+
+- must create three different S3 buckets for each environment (prod, dev, staging) to store Terraform state file
+- execute the below command to deploy the infrastructure
+- `` terraform apply -var-file=common.dev.tfvars -no-color -auto-approve ``
+- for cleanup, execute the below command to destroy the deployed infrastructure
+- `` terraform destroy -var-file=common.dev.tfvars -no-color -auto-approve ``
